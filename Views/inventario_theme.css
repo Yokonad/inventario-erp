@@ -1,0 +1,115 @@
+/* ============================================
+   MÓDULO INVENTARIO_KRSFT - TEMA DE COLORES
+   Variables CSS específicas del módulo
+   Versión 1.0.0
+   ============================================ */
+
+:root {
+    /* Colores Primarios del Módulo (Blue/Purple - Inventario Idea) */
+    --inventario-primary: #4A90E2;
+    --inventario-primary-dark: #357ABD;
+    --inventario-primary-light: #5B9FE8;
+    --inventario-secondary: #9013FE;
+    --inventario-gradient: linear-gradient(135deg, #4A90E2 0%, #5B9FE8 50%, #9013FE 100%);
+
+    /* Colores para Animación del Fondo */
+    --inventario-bg-color-1: #4A90E2;
+    --inventario-bg-color-2: #9013FE;
+
+    /* Toggle Border - Modo Claro */
+    --inventario-toggle-border: #94a3b8;
+
+    /* Colores de Estado */
+    --inventario-success: #10b981;
+    --inventario-success-dark: #059669;
+    --inventario-danger: #ef4444;
+    --inventario-danger-dark: #dc2626;
+    --inventario-warning: #f59e0b;
+    --inventario-info: #3b82f6;
+
+    /* Fondos - Modo Claro */
+    --inventario-bg-page: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+    --inventario-bg-container: rgba(255, 255, 255, 0.95);
+    --inventario-bg-card: #ffffff;
+    --inventario-bg-card-dark: rgba(255, 255, 255, 0.1);
+    --inventario-bg-light: #f8fafc;
+    --inventario-bg-input: #ffffff;
+
+    /* Textos - Modo Claro */
+    --inventario-text-dark: #1e293b;
+    --inventario-text-gray: #64748b;
+    --inventario-text-light: #94a3b8;
+    --inventario-text-muted: #475569;
+    --inventario-text-white: #ffffff;
+    --inventario-text-white-muted: rgba(255, 255, 255, 0.7);
+    --inventario-text-white-soft: rgba(255, 255, 255, 0.6);
+
+    /* Bordes y Sombras */
+    --inventario-border: #e2e8f0;
+    --inventario-border-light: #f1f5f9;
+    --inventario-border-white: rgba(255, 255, 255, 0.2);
+    --inventario-border-white-light: rgba(255, 255, 255, 0.1);
+    --inventario-shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.08);
+    --inventario-shadow-md: 0 8px 25px rgba(0, 0, 0, 0.12);
+    --inventario-shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
+    --inventario-shadow-primary: 0 4px 12px rgba(74, 144, 226, 0.4);
+
+    /* Badges */
+    --inventario-badge-success-bg: rgba(16, 185, 129, 0.15);
+    --inventario-badge-success-text: #10b981;
+    --inventario-badge-warning-bg: rgba(245, 158, 11, 0.15);
+    --inventario-badge-warning-text: #f59e0b;
+    --inventario-badge-danger-bg: rgba(239, 68, 68, 0.15);
+    --inventario-badge-danger-text: #ef4444;
+
+    /* Botones de Acción */
+    --inventario-btn-add-bg: #4A90E2;
+    --inventario-btn-add-hover: #357ABD;
+
+    /* Transiciones */
+    --inventario-transition: all 0.3s ease;
+    --inventario-transition-fast: all 0.2s ease;
+
+    /* Radios de borde */
+    --inventario-radius-sm: 6px;
+    --inventario-radius-md: 8px;
+    --inventario-radius-lg: 12px;
+    --inventario-radius-xl: 16px;
+    --inventario-radius-2xl: 20px;
+    --inventario-radius-full: 9999px;
+}
+
+/* ============================================
+   MODO OSCURO
+   ============================================ */
+body.dark-mode {
+    /* Fondos - Modo Oscuro */
+    --inventario-bg-page: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    --inventario-bg-container: rgba(30, 41, 59, 0.95);
+    --inventario-bg-card: #1e293b;
+    --inventario-bg-card-dark: rgba(255, 255, 255, 0.1);
+    --inventario-bg-light: #334155;
+    --inventario-bg-input: #1e293b;
+
+    /* Textos - Modo Oscuro */
+    --inventario-text-dark: #f1f5f9;
+    --inventario-text-gray: #cbd5e1;
+    --inventario-text-light: #94a3b8;
+    --inventario-text-muted: #e2e8f0;
+
+    /* Bordes - Modo Oscuro */
+    --inventario-border: #334155;
+    --inventario-border-light: #1e293b;
+
+    /* Sombras - Modo Oscuro */
+    --inventario-shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.3);
+    --inventario-shadow-md: 0 8px 25px rgba(0, 0, 0, 0.4);
+    --inventario-shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+
+    /* Colores para Animación del Fondo - Modo Oscuro */
+    --inventario-bg-color-1: #0f172a;
+    --inventario-bg-color-2: #1e293b;
+
+    /* Toggle Border - Modo Oscuro */
+    --inventario-toggle-border: #f59e0b;
+}
