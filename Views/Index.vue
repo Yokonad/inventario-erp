@@ -34,4 +34,22 @@ import './inventario.css';
 defineProps({
     message: String
 });
+
+// 3. Dropdowns Estándar
+const categories = [
+    { value: 'quimicos', label: 'Químicos' },
+    { value: 'accesorios', label: 'Accesorios' },
+    { value: 'materiales', label: 'Materiales' },
+    { value: 'herramientas', label: 'Herramientas' },
+    { value: 'otros', label: 'Otros' }
+];
+
+const units = [
+    { value: 'unidad', label: 'Unidad' },
+    { value: 'galon', label: 'Galón' },
+    { value: 'metro', label: 'Metro' },
+    { value: 'kg', label: 'Kg' },
+    { value: 'litro', label: 'Litro' },
+    { value: 'caja', label: 'Caja' }
+];
 </script>
