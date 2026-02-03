@@ -105,10 +105,20 @@ class InventarioController extends Controller
      */
     public function list(Request $request)
     {
+        $this->syncPaidOrdersToInventory();
+
+        $products = Producto::query()
+            ->where(function ($q) {
+                $q->where('apartado', false)
+                    ->orWhereNull('apartado');
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return response()->json([
             'success' => true,
-            'products' => $this->mockProducts,
-            'total' => count($this->mockProducts)
+            'products' => $products,
+            'total' => $products->count()
         ]);
     }
 
@@ -117,15 +127,16 @@ class InventarioController extends Controller
      */
     public function stats()
     {
-        $totalItems = count($this->mockProducts);
+        $totalItems = Producto::count();
         $totalValueUsd = 0;
-        
-        foreach ($this->mockProducts as $p) {
-            if ($p['moneda'] === 'USD') {
-                $totalValueUsd += ($p['precio'] * $p['cantidad']);
+
+        $products = Producto::all();
+        foreach ($products as $p) {
+            if ($p->moneda === 'USD') {
+                $totalValueUsd += ($p->precio * $p->cantidad);
             } else {
-                // Simple conversion for mock
-                $totalValueUsd += (($p['precio'] / 3.75) * $p['cantidad']);
+                // Simple conversion for now
+                $totalValueUsd += (($p->precio / 3.75) * $p->cantidad);
             }
         }
 
@@ -133,9 +144,9 @@ class InventarioController extends Controller
             'success' => true,
             'stats' => [
                 'total_products' => $totalItems,
-                'active_products' => $totalItems,
+                'active_products' => Producto::where('estado', 'activo')->count(),
                 'total_value_usd' => round($totalValueUsd, 2),
-                'stock_alert' => 1 // Mock alert count
+                'stock_alert' => Producto::where('cantidad', '<=', 5)->count()
             ]
         ]);
     }
@@ -145,7 +156,7 @@ class InventarioController extends Controller
      */
     public function show($id)
     {
-        $product = collect($this->mockProducts)->firstWhere('id', (int)$id);
+        $product = Producto::find($id);
 
         if (!$product) {
             return response()->json(['success' => false, 'message' => 'Producto no encontrado'], 404);
@@ -168,10 +179,25 @@ class InventarioController extends Controller
             'cantidad' => 'required|integer'
         ]);
 
+        $product = Producto::create([
+            'nombre' => $request->input('nombre'),
+            'descripcion' => $request->input('descripcion'),
+            'sku' => $request->input('sku'),
+            'cantidad' => $request->input('cantidad'),
+            'precio' => $request->input('precio', 0),
+            'categoria' => $request->input('categoria', 'Otros'),
+            'unidad' => $request->input('unidad', 'UND'),
+            'moneda' => $request->input('moneda', 'PEN'),
+            'estado' => $request->input('estado', 'activo'),
+            'ubicacion' => $request->input('ubicacion'),
+            'apartado' => false,
+            'estado_ubicacion' => $request->input('ubicacion') ? 'asignada' : null
+        ]);
+
         return response()->json([
             'success' => true,
-            'message' => 'Producto creado correctamente (Simulación)',
-            'data' => $request->all()
+            'message' => 'Producto creado correctamente',
+            'data' => $product
         ]);
     }
 
@@ -180,9 +206,27 @@ class InventarioController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $product = Producto::find($id);
+        if (!$product) {
+            return response()->json(['success' => false, 'message' => 'Producto no encontrado'], 404);
+        }
+
+        $product->update($request->only([
+            'nombre',
+            'descripcion',
+            'sku',
+            'cantidad',
+            'precio',
+            'categoria',
+            'unidad',
+            'moneda',
+            'estado',
+            'ubicacion'
+        ]));
+
         return response()->json([
             'success' => true,
-            'message' => 'Producto actualizado correctamente (Simulación)',
+            'message' => 'Producto actualizado correctamente',
             'id' => $id
         ]);
     }
@@ -192,9 +236,14 @@ class InventarioController extends Controller
      */
     public function destroy($id)
     {
+        $product = Producto::find($id);
+        if ($product) {
+            $product->delete();
+        }
+
         return response()->json([
             'success' => true,
-            'message' => 'Producto eliminado correctamente (Simulación)',
+            'message' => 'Producto eliminado correctamente',
             'id' => $id
         ]);
     }
@@ -241,8 +290,10 @@ class InventarioController extends Controller
                     'amount_pen' => $item['amount_pen'] ?? ($item['subtotal'] ?? 0)
                 ];
 
-                // Guardar en mock (en producción sería DB::table)
-                $addedItems[] = $newProduct;
+                $addedItems[] = Producto::firstOrCreate(
+                    ['sku' => $newProduct['sku']],
+                    $newProduct
+                );
             }
 
             return response()->json([
@@ -263,13 +314,16 @@ class InventarioController extends Controller
     public function getReservedItems(Request $request)
     {
         try {
-            // En mock, retornamos empty. En producción:
-            // $items = Producto::where('apartado', true)->get();
-            
+            $this->syncPaidOrdersToInventory();
+
+            $items = Producto::where('apartado', true)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
             return response()->json([
                 'success' => true,
-                'reserved_items' => [],
-                'total' => 0
+                'reserved_items' => $items,
+                'total' => $items->count()
             ]);
 
         } catch (\Exception $e) {
@@ -299,20 +353,25 @@ class InventarioController extends Controller
             $locationCode = "{$zona}-{$nivel}-{$posicion}";
 
             // Validar que la ubicación no esté duplicada
-            if (!$this->isLocationAvailable($locationCode)) {
+            if (!$this->isLocationAvailable($locationCode, $productId)) {
                 return response()->json([
                     'success' => false,
                     'message' => "La ubicación {$locationCode} ya está ocupada"
                 ], 409);
             }
 
-            // En producción:
-            // $product = Producto::find($productId);
-            // $product->update([
-            //     'ubicacion' => $locationCode,
-            //     'estado_ubicacion' => 'asignada',
-            //     'apartado' => false
-            // ]);
+            $product = Producto::find($productId);
+            if (!$product) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Producto no encontrado'
+                ], 404);
+            }
+
+            $product->update([
+                'ubicacion' => $locationCode,
+                'estado_ubicacion' => 'asignada'
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -328,13 +387,98 @@ class InventarioController extends Controller
     /**
      * Validar que una ubicación no esté duplicada
      */
-    private function isLocationAvailable(string $location): bool
+    private function isLocationAvailable(string $location, int $productId = 0): bool
     {
-        // En producción:
-        // return !Producto::where('ubicacion', $location)->exists();
-        
-        // En mock, siempre disponible
-        return true;
+        return !Producto::where('ubicacion', $location)
+            ->where('id', '!=', $productId)
+            ->exists();
+    }
+
+    private function syncPaidOrdersToInventory(): void
+    {
+        try {
+            $orders = DB::table('purchase_orders')
+                ->join('projects', 'purchase_orders.project_id', '=', 'projects.id')
+                ->select('purchase_orders.*', 'projects.name as project_name')
+                ->where('purchase_orders.type', 'material')
+                ->where('purchase_orders.payment_confirmed', true)
+                ->orderBy('purchase_orders.payment_confirmed_at', 'desc')
+                ->limit(200)
+                ->get();
+
+            foreach ($orders as $order) {
+                $materials = $order->materials ? json_decode($order->materials, true) : [];
+                $batchId = $order->batch_id ?: ('PAY-' . date('Ymd') . '-' . $order->id);
+
+                $items = [];
+                if (is_array($materials) && count($materials) > 0) {
+                    foreach ($materials as $material) {
+                        $items[] = [
+                            'description' => $material['description'] ?? $order->description,
+                            'qty' => $material['qty'] ?? 1,
+                            'unit' => $material['unit'] ?? $order->unit ?? 'UND',
+                            'subtotal' => $order->amount ?? 0,
+                            'currency' => $order->currency ?? 'PEN',
+                            'diameter' => $material['diameter'] ?? null,
+                            'series' => $material['series'] ?? null,
+                            'material_type' => $material['material_type'] ?? null,
+                            'amount_pen' => $order->amount_pen ?? $order->amount ?? 0
+                        ];
+                    }
+                } else {
+                    $items[] = [
+                        'description' => $order->description,
+                        'qty' => 1,
+                        'unit' => $order->unit ?? 'UND',
+                        'subtotal' => $order->amount ?? 0,
+                        'currency' => $order->currency ?? 'PEN',
+                        'diameter' => $order->diameter ?? null,
+                        'series' => $order->series ?? null,
+                        'material_type' => $order->material_type ?? null,
+                        'amount_pen' => $order->amount_pen ?? $order->amount ?? 0
+                    ];
+                }
+
+                foreach ($items as $item) {
+                    $sku = 'QP-' . substr(md5($batchId . ($item['description'] ?? '')), 0, 8);
+
+                    $exists = DB::table('inventario_productos')
+                        ->where('sku', $sku)
+                        ->exists();
+
+                    if ($exists) {
+                        continue;
+                    }
+
+                    DB::table('inventario_productos')->insert([
+                        'nombre' => $item['description'] ?? 'Material sin descripción',
+                        'sku' => $sku,
+                        'descripcion' => $item['description'] ?? '',
+                        'cantidad' => $item['qty'] ?? 1,
+                        'unidad' => $item['unit'] ?? 'UND',
+                        'precio' => $item['subtotal'] ?? 0,
+                        'moneda' => $item['currency'] ?? 'PEN',
+                        'categoria' => 'Materiales Comprados',
+                        'ubicacion' => null,
+                        'estado' => 'activo',
+                        'apartado' => true,
+                        'nombre_proyecto' => $order->project_name,
+                        'estado_ubicacion' => 'pendiente',
+                        'project_id' => $order->project_id,
+                        'batch_id' => $batchId,
+                        'diameter' => $item['diameter'] ?? null,
+                        'series' => $item['series'] ?? null,
+                        'material_type' => $item['material_type'] ?? null,
+                        'amount' => $item['subtotal'] ?? 0,
+                        'amount_pen' => $item['amount_pen'] ?? ($item['subtotal'] ?? 0),
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error syncing paid orders to inventory: ' . $e->getMessage());
+        }
     }
 }
 

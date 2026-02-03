@@ -1,8 +1,8 @@
 {
     "name": "InventarioKrsft",
     "display_name": "GESTIÓN DE INVENTARIO",
-    "version": "2.1.0",
-    "description": "Sistema de control de inventario y stock. Items apartados integrados en tabla principal con indicador de proyecto. Asignación de ubicación ZNP obligatoria para materiales reservados.",
+    "version": "2.2.2",
+    "description": "Sistema de control de inventario y stock. Registro en base de datos de materiales apartados y ubicación ZNP.",
     "icon": "icon.svg",
     "color": "#4A90E2",
     "gradient": "linear-gradient(135deg, #4A90E2, #9013FE)",
