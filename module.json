@@ -1,8 +1,8 @@
 {
     "name": "InventarioKrsft",
     "display_name": "GESTIÓN DE INVENTARIO",
-    "version": "1.4.7",
-    "description": "Sistema de control de inventario y stock.",
+    "version": "2.0.0",
+    "description": "Sistema de control de inventario y stock. Incluye integración automática con ComprasKrsft para registrar materiales apartados.",
     "icon": "icon.svg",
     "color": "#4A90E2",
     "gradient": "linear-gradient(135deg, #4A90E2, #9013FE)",
@@ -12,5 +12,5 @@
         "Admin",
         "Supervisor"
     ],
-    "dependencies": []
+    "dependencies": ["ComprasKrsft"]
 }

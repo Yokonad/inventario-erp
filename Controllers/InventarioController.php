@@ -5,6 +5,8 @@ namespace Modulos_ERP\InventarioKrsft\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
+use Modulos_ERP\InventarioKrsft\Models\Producto;
 
 class InventarioController extends Controller
 {
@@ -21,7 +23,10 @@ class InventarioController extends Controller
             'moneda' => 'USD',
             'categoria' => 'Electrónica',
             'ubicacion' => 'A-1-1',
-            'estado' => 'activo'
+            'estado' => 'activo',
+            'apartado' => false,
+            'nombre_proyecto' => null,
+            'estado_ubicacion' => null
         ],
         [
             'id' => 2,
@@ -34,7 +39,10 @@ class InventarioController extends Controller
             'moneda' => 'USD',
             'categoria' => 'Electrónica',
             'ubicacion' => 'A-1-2',
-            'estado' => 'activo'
+            'estado' => 'activo',
+            'apartado' => false,
+            'nombre_proyecto' => null,
+            'estado_ubicacion' => null
         ],
         [
             'id' => 3,
@@ -47,7 +55,10 @@ class InventarioController extends Controller
             'moneda' => 'USD',
             'categoria' => 'Químicos',
             'ubicacion' => 'B-2-1',
-            'estado' => 'pendiente'
+            'estado' => 'pendiente',
+            'apartado' => false,
+            'nombre_proyecto' => null,
+            'estado_ubicacion' => null
         ],
         [
             'id' => 4,
@@ -60,7 +71,10 @@ class InventarioController extends Controller
             'moneda' => 'PEN',
             'categoria' => 'Mobiliario',
             'ubicacion' => 'C-1-1',
-            'estado' => 'rechazado'
+            'estado' => 'rechazado',
+            'apartado' => false,
+            'nombre_proyecto' => null,
+            'estado_ubicacion' => null
         ],
         [
             'id' => 5,
@@ -73,7 +87,10 @@ class InventarioController extends Controller
             'moneda' => 'PEN',
             'categoria' => 'EPP',
             'ubicacion' => 'D-3-4',
-            'estado' => 'activo'
+            'estado' => 'activo',
+            'apartado' => false,
+            'nombre_proyecto' => null,
+            'estado_ubicacion' => null
         ]
     ];
 
@@ -181,4 +198,143 @@ class InventarioController extends Controller
             'id' => $id
         ]);
     }
+
+    /**
+     * Agregar items desde compras pagadas
+     * POST /api/inventario_krsft/add-from-purchase
+     */
+    public function addPurchasedItems(Request $request)
+    {
+        try {
+            $items = $request->input('items', []);
+            $projectId = $request->input('project_id');
+            $projectName = $request->input('project_name');
+            $batchId = $request->input('batch_id');
+
+            if (!$items || count($items) === 0) {
+                return response()->json(['success' => false, 'message' => 'No hay items para agregar'], 400);
+            }
+
+            $addedItems = [];
+
+            foreach ($items as $item) {
+                $newProduct = [
+                    'nombre' => $item['description'] ?? 'Material sin descripción',
+                    'sku' => 'QP-' . substr(md5($batchId . $item['description']), 0, 8),
+                    'descripcion' => $item['description'] ?? '',
+                    'cantidad' => $item['qty'] ?? 1,
+                    'unidad' => $item['unit'] ?? 'UND',
+                    'precio' => $item['subtotal'] ?? 0,
+                    'moneda' => $item['currency'] ?? 'PEN',
+                    'categoria' => 'Materiales Comprados',
+                    'ubicacion' => null,
+                    'estado' => 'activo',
+                    'apartado' => true,
+                    'nombre_proyecto' => $projectName,
+                    'estado_ubicacion' => 'pendiente',
+                    'project_id' => $projectId,
+                    'batch_id' => $batchId,
+                    'diameter' => $item['diameter'] ?? null,
+                    'series' => $item['series'] ?? null,
+                    'material_type' => $item['material_type'] ?? null,
+                    'amount' => $item['subtotal'] ?? 0,
+                    'amount_pen' => $item['amount_pen'] ?? ($item['subtotal'] ?? 0)
+                ];
+
+                // Guardar en mock (en producción sería DB::table)
+                $addedItems[] = $newProduct;
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => count($addedItems) . ' items agregados al inventario como apartados',
+                'items' => $addedItems
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Obtener items apartados (pendientes de ubicación)
+     * GET /api/inventario_krsft/reserved-items
+     */
+    public function getReservedItems(Request $request)
+    {
+        try {
+            // En mock, retornamos empty. En producción:
+            // $items = Producto::where('apartado', true)->get();
+            
+            return response()->json([
+                'success' => true,
+                'reserved_items' => [],
+                'total' => 0
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Asignar ubicación a item apartado
+     * POST /api/inventario_krsft/assign-location
+     */
+    public function assignLocation(Request $request)
+    {
+        try {
+            $request->validate([
+                'product_id' => 'required|integer',
+                'zona' => 'required|string|size:1',
+                'nivel' => 'required|integer|min:1|max:4',
+                'posicion' => 'required|integer|min:1|max:8'
+            ]);
+
+            $productId = $request->input('product_id');
+            $zona = $request->input('zona');
+            $nivel = $request->input('nivel');
+            $posicion = $request->input('posicion');
+
+            $locationCode = "{$zona}-{$nivel}-{$posicion}";
+
+            // Validar que la ubicación no esté duplicada
+            if (!$this->isLocationAvailable($locationCode)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "La ubicación {$locationCode} ya está ocupada"
+                ], 409);
+            }
+
+            // En producción:
+            // $product = Producto::find($productId);
+            // $product->update([
+            //     'ubicacion' => $locationCode,
+            //     'estado_ubicacion' => 'asignada',
+            //     'apartado' => false
+            // ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => "Ubicación {$locationCode} asignada correctamente",
+                'location' => $locationCode
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Validar que una ubicación no esté duplicada
+     */
+    private function isLocationAvailable(string $location): bool
+    {
+        // En producción:
+        // return !Producto::where('ubicacion', $location)->exists();
+        
+        // En mock, siempre disponible
+        return true;
+    }
 }
+

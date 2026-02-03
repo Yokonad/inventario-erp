@@ -63,6 +63,69 @@
                     </div>
                 </div>
 
+                <!-- SECCIÓN: Items Apartados para Proyectos -->
+                <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(245, 158, 11, 0.1);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                            <h2 style="margin: 0; color: #92400e; font-size: 1.1rem; font-weight: 700;">MATERIALES APARTADOS (Sin Ubicación)</h2>
+                        </div>
+                        <span style="background: #f59e0b; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">{{ reservedItems.length }} items</span>
+                    </div>
+
+                    <div v-if="reservedItems.length === 0" style="text-align: center; padding: 30px; color: #92400e;">
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 10px; opacity: 0.5;">
+                            <path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"></path>
+                        </svg>
+                        <p style="margin: 0; font-size: 0.95rem;">No hay materiales apartados en este momento</p>
+                    </div>
+
+                    <div v-else style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 12px;">
+                        <div v-for="item in reservedItems" :key="item.id" style="background: white; border: 1px solid #fcd34d; border-radius: 10px; padding: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                                <div>
+                                    <div style="font-weight: 700; color: #1f2937; font-size: 0.95rem;">{{ item.nombre }}</div>
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-top: 2px;">{{ item.sku }}</div>
+                                </div>
+                                <span style="background: #fbbf24; color: #78350f; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">{{ item.estado_ubicacion === 'asignada' ? '✓ ASIGNADA' : '⚠ PENDIENTE' }}</span>
+                            </div>
+
+                            <div style="background: #f3f4f6; padding: 10px; border-radius: 6px; margin-bottom: 12px;">
+                                <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 6px;">📌 PROYECTO</div>
+                                <div style="font-weight: 600; color: #374151; font-size: 0.9rem;">{{ item.nombre_proyecto }}</div>
+                            </div>
+
+                            <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.7rem; color: #6b7280; text-transform: uppercase; margin-bottom: 2px;">Cantidad</div>
+                                    <div style="font-weight: 700; color: #1f2937;">{{ item.cantidad }} {{ item.unidad }}</div>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.7rem; color: #6b7280; text-transform: uppercase; margin-bottom: 2px;">Valor</div>
+                                    <div style="font-weight: 700; color: #1f2937;">{{ item.currency || 'PEN' }} {{ item.amount }}</div>
+                                </div>
+                            </div>
+
+                            <div v-if="item.ubicacion" style="background: #d1fae5; border: 1px solid #6ee7b7; padding: 8px; border-radius: 6px; margin-bottom: 12px; text-align: center;">
+                                <div style="font-size: 0.7rem; color: #047857; text-transform: uppercase; margin-bottom: 2px;">Ubicación ZNP</div>
+                                <div class="location-code" style="font-size: 0.95rem;">{{ item.ubicacion }}</div>
+                            </div>
+
+                            <button v-if="item.estado_ubicacion !== 'asignada'" @click="openLocationModal(item)" style="width: 100%; padding: 8px; background: #f59e0b; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: all 0.2s;">
+                                📍 Asignar Ubicación
+                            </button>
+                            <button v-else disabled style="width: 100%; padding: 8px; background: #d1fae5; color: #047857; border: none; border-radius: 6px; font-weight: 600; cursor: not-allowed; font-size: 0.9rem;">
+                                ✓ Ubicación Asignada
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Tabla de Datos -->
                 <div style="background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden;">
                     <table style="width: 100%; border-collapse: collapse;">
@@ -205,6 +268,72 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal Asignar Ubicación a Item Apartado -->
+                <div v-if="showLocationModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 101; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+                    <div style="background: white; width: 500px; max-width: 90%; border-radius: 16px; padding: 0; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; animation: slideUp 0.3s ease-out;">
+                        <div style="padding: 20px 24px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #fef3c7, #fde68a);">
+                            <h2 style="margin: 0; font-size: 1.15rem; color: #92400e; display: flex; align-items: center; gap: 10px;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                                Asignar Ubicación ZNP
+                            </h2>
+                            <button @click="closeLocationModal" style="background: none; border: none; font-size: 1.5rem; color: #92400e; cursor: pointer;">&times;</button>
+                        </div>
+                        
+                        <div style="padding: 24px;">
+                            <div style="background: #fef3c7; border: 1px solid #fcd34d; border-radius: 10px; padding: 12px; margin-bottom: 20px;">
+                                <div style="font-size: 0.85rem; color: #92400e; margin-bottom: 6px;">📦 Material</div>
+                                <div style="font-weight: 700; color: #78350f;">{{ selectedReservedItem?.nombre }}</div>
+                                <div style="font-size: 0.8rem; color: #b45309; margin-top: 4px;">Proyecto: <span style="font-weight: 600;">{{ selectedReservedItem?.nombre_proyecto }}</span></div>
+                            </div>
+
+                            <form @submit.prevent="saveLocation">
+                                <h3 style="font-size: 0.9rem; text-transform: uppercase; color: #94a3b8; margin: 0 0 16px 0; font-weight: 700;">Código de Ubicación (Sistema ZNP)</h3>
+                                
+                                <div style="background: rgba(74, 144, 226, 0.05); padding: 16px; border-radius: 10px; border: 1px dashed var(--inventario-primary); margin-bottom: 20px;">
+                                    <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+                                        <div style="flex: 1;">
+                                            <label style="display: block; font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 4px;">Zona (A-E)</label>
+                                            <select v-model="locationForm.zona" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;" required>
+                                                <option value="">Seleccionar...</option>
+                                                <option v-for="z in ['A','B','C','D','E']" :key="z" :value="z">{{ z }}</option>
+                                            </select>
+                                        </div>
+                                        <div style="flex: 1;">
+                                            <label style="display: block; font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 4px;">Nivel (1-4)</label>
+                                            <select v-model="locationForm.nivel" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;" required>
+                                                <option value="">Seleccionar...</option>
+                                                <option v-for="n in [1,2,3,4]" :key="n" :value="n">{{ n }}</option>
+                                            </select>
+                                        </div>
+                                        <div style="flex: 1;">
+                                            <label style="display: block; font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 4px;">Posición (1-8)</label>
+                                            <select v-model="locationForm.posicion" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;" required>
+                                                <option value="">Seleccionar...</option>
+                                                <option v-for="p in 8" :key="p" :value="p">{{ p }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="text-align: center; background: white; padding: 12px; border-radius: 6px; border: 2px solid #fcd34d;">
+                                        <div style="font-size: 0.75rem; color: #92400e; text-transform: uppercase; margin-bottom: 6px; font-weight: 600;">Código Final</div>
+                                        <div class="location-code" style="font-size: 1.4rem; color: #b45309; letter-spacing: 2px;">{{ computedReservedLocationCode }}</div>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                                    <button type="button" @click="closeLocationModal" style="padding: 10px 20px; border: 1px solid #cbd5e1; background: white; border-radius: 8px; font-weight: 600; color: #64748b; cursor: pointer;">Cancelar</button>
+                                    <button type="submit" style="padding: 10px 20px; background: #f59e0b; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                                        📍 Guardar Ubicación
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </Teleport>
 
         </div>
@@ -222,11 +351,15 @@ const units = ['Unidad', 'Galón', 'Metro', 'Kg', 'Litro', 'Caja'];
 
 // Estado
 const products = ref([]);
+const reservedItems = ref([]);
 const searchQuery = ref('');
 const filterCategory = ref('');
 const filterStatus = ref('');
 const showModal = ref(false);
+const showLocationModal = ref(false);
 const isEditing = ref(false);
+const selectedReservedItem = ref(null);
+const loadingLocation = ref(false);
 
 const form = ref({
     id: null,
@@ -234,6 +367,12 @@ const form = ref({
     categoria: '',
     unidad: '',
     cantidad: 1,
+    zona: 'A',
+    nivel: 1,
+    posicion: 1
+});
+
+const locationForm = ref({
     zona: 'A',
     nivel: 1,
     posicion: 1
@@ -267,6 +406,10 @@ const filteredItems = computed(() => {
 // Computed: Location Code
 const computedLocationCode = computed(() => {
     return `${form.value.zona}-${form.value.nivel}-${form.value.posicion}`;
+});
+
+const computedReservedLocationCode = computed(() => {
+    return `${locationForm.value.zona}-${locationForm.value.nivel}-${locationForm.value.posicion}`;
 });
 
 // Actions
@@ -304,13 +447,79 @@ const closeModal = () => {
     showModal.value = false;
 };
 
+const openLocationModal = (item) => {
+    selectedReservedItem.value = item;
+    locationForm.value = {
+        zona: 'A',
+        nivel: 1,
+        posicion: 1
+    };
+    showLocationModal.value = true;
+};
+
+const closeLocationModal = () => {
+    showLocationModal.value = false;
+    selectedReservedItem.value = null;
+};
+
+const saveLocation = async () => {
+    if (!selectedReservedItem.value) {
+        alert('Error: No hay item seleccionado');
+        return;
+    }
+
+    try {
+        loadingLocation.value = true;
+        const response = await fetch('/api/inventario_krsft/assign-location', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                product_id: selectedReservedItem.value.id,
+                zona: locationForm.value.zona,
+                nivel: locationForm.value.nivel,
+                posicion: locationForm.value.posicion
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            // Actualizar el item localmente
+            selectedReservedItem.value.ubicacion = computedReservedLocationCode.value;
+            selectedReservedItem.value.estado_ubicacion = 'asignada';
+            alert(`✓ Ubicación ${data.location} asignada correctamente`);
+            closeLocationModal();
+            fetchReservedItems();
+        } else {
+            alert(`❌ ${data.message}`);
+        }
+    } catch (error) {
+        console.error('Error al asignar ubicación:', error);
+        alert('Error al asignar ubicación');
+    } finally {
+        loadingLocation.value = false;
+    }
+};
+
 const saveMaterial = () => {
     alert(`Guardando material: ${form.value.nombre} en ubicación ${computedLocationCode.value}`);
     closeModal();
 };
 
+const fetchReservedItems = async () => {
+    try {
+        const response = await fetch('/api/inventario_krsft/reserved-items');
+        const data = await response.json();
+        if (data.success) {
+            reservedItems.value = data.reserved_items;
+        }
+    } catch (error) {
+        console.error("Error fetching reserved items:", error);
+    }
+};
+
 onMounted(() => {
     fetchProducts();
+    fetchReservedItems();
 });
 
 const goBack = () => {

@@ -14,3 +14,8 @@ Route::get('/{id}', "{$ctrl}@show")->where('id', '[0-9]+');
 Route::post('/create', "{$ctrl}@store");
 Route::put('/{id}', "{$ctrl}@update")->where('id', '[0-9]+');
 Route::delete('/{id}', "{$ctrl}@destroy")->where('id', '[0-9]+');
+
+// Integration with ComprasKrsft (Purchased items)
+Route::post('/add-from-purchase', "{$ctrl}@addPurchasedItems");
+Route::get('/reserved-items', "{$ctrl}@getReservedItems");
+Route::post('/assign-location', "{$ctrl}@assignLocation");
