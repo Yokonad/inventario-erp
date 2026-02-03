@@ -6,95 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Log;
 use Modulos_ERP\InventarioKrsft\Models\Producto;
 
 class InventarioController extends Controller
 {
-    // Mock Data simulating DB records
-    private $mockProducts = [
-        [
-            'id' => 1,
-            'nombre' => 'Laptop Gamer HP',
-            'sku' => 'LAP-001',
-            'descripcion' => 'Laptop de alto rendimiento',
-            'cantidad' => 15,
-            'unidad' => 'UND',
-            'precio' => 1200.00,
-            'moneda' => 'USD',
-            'categoria' => 'Electrónica',
-            'ubicacion' => 'A-1-1',
-            'estado' => 'activo',
-            'apartado' => false,
-            'nombre_proyecto' => null,
-            'estado_ubicacion' => null
-        ],
-        [
-            'id' => 2,
-            'nombre' => 'Monitor 24" Dell',
-            'sku' => 'MON-023',
-            'descripcion' => 'Monitor IPS Full HD',
-            'cantidad' => 30,
-            'unidad' => 'UND',
-            'precio' => 180.50,
-            'moneda' => 'USD',
-            'categoria' => 'Electrónica',
-            'ubicacion' => 'A-1-2',
-            'estado' => 'activo',
-            'apartado' => false,
-            'nombre_proyecto' => null,
-            'estado_ubicacion' => null
-        ],
-        [
-            'id' => 3,
-            'nombre' => 'Ácido Sulfúrico',
-            'sku' => 'CHEM-001',
-            'descripcion' => 'Bidón de 5L',
-            'cantidad' => 50,
-            'unidad' => 'Galón',
-            'precio' => 45.00,
-            'moneda' => 'USD',
-            'categoria' => 'Químicos',
-            'ubicacion' => 'B-2-1',
-            'estado' => 'pendiente',
-            'apartado' => false,
-            'nombre_proyecto' => null,
-            'estado_ubicacion' => null
-        ],
-        [
-            'id' => 4,
-            'nombre' => 'Silla Ergonómica',
-            'sku' => 'FUR-005',
-            'descripcion' => 'Silla de oficina con soporte lumbar',
-            'cantidad' => 10,
-            'unidad' => 'UND',
-            'precio' => 850.00,
-            'moneda' => 'PEN',
-            'categoria' => 'Mobiliario',
-            'ubicacion' => 'C-1-1',
-            'estado' => 'rechazado',
-            'apartado' => false,
-            'nombre_proyecto' => null,
-            'estado_ubicacion' => null
-        ],
-        [
-            'id' => 5,
-            'nombre' => 'Casco de Seguridad',
-            'sku' => 'SAFE-99',
-            'descripcion' => 'Casco industrial amarillo',
-            'cantidad' => 100,
-            'unidad' => 'UND',
-            'precio' => 25.00,
-            'moneda' => 'PEN',
-            'categoria' => 'EPP',
-            'ubicacion' => 'D-3-4',
-            'estado' => 'activo',
-            'apartado' => false,
-            'nombre_proyecto' => null,
-            'estado_ubicacion' => null
-        ]
-    ];
-
     public function index()
     {
         $moduleName = basename(dirname(__DIR__));
@@ -102,12 +18,10 @@ class InventarioController extends Controller
     }
 
     /**
-     * Listar todos los productos (Mock)
+     * Listar todos los productos del inventario
      */
     public function list(Request $request)
     {
-        $this->syncPaidOrdersToInventory();
-
         $products = Producto::query()
             ->where(function ($q) {
                 $q->where('apartado', false)
@@ -124,7 +38,7 @@ class InventarioController extends Controller
     }
 
     /**
-     * Obtener estadísticas (Mock)
+     * Obtener estadísticas del inventario
      */
     public function stats()
     {
@@ -136,7 +50,6 @@ class InventarioController extends Controller
             if ($p->moneda === 'USD') {
                 $totalValueUsd += ($p->precio * $p->cantidad);
             } else {
-                // Simple conversion for now
                 $totalValueUsd += (($p->precio / 3.75) * $p->cantidad);
             }
         }
@@ -153,7 +66,7 @@ class InventarioController extends Controller
     }
 
     /**
-     * Detalle de producto (Mock)
+     * Detalle de producto
      */
     public function show($id)
     {
@@ -170,7 +83,7 @@ class InventarioController extends Controller
     }
 
     /**
-     * Crear producto (Mock - No guarda)
+     * Crear producto
      */
     public function store(Request $request)
     {
@@ -203,7 +116,7 @@ class InventarioController extends Controller
     }
 
     /**
-     * Actualizar producto (Mock - No guarda)
+     * Actualizar producto
      */
     public function update(Request $request, $id)
     {
@@ -233,7 +146,7 @@ class InventarioController extends Controller
     }
 
     /**
-     * Eliminar producto (Mock - No guarda)
+     * Eliminar producto
      */
     public function destroy($id)
     {
@@ -250,7 +163,7 @@ class InventarioController extends Controller
     }
 
     /**
-     * Agregar items desde compras pagadas
+     * Agregar items desde compras pagadas (llamado desde ComprasKrsft)
      * POST /api/inventario_krsft/add-from-purchase
      */
     public function addPurchasedItems(Request $request)
@@ -268,9 +181,16 @@ class InventarioController extends Controller
             $addedItems = [];
 
             foreach ($items as $item) {
-                $newProduct = [
+                $sku = 'INV-' . substr(md5($batchId . ($item['description'] ?? '') . microtime()), 0, 8);
+
+                // Verificar que el SKU no exista
+                if (Producto::where('sku', $sku)->exists()) {
+                    continue;
+                }
+
+                $product = Producto::create([
                     'nombre' => $item['description'] ?? 'Material sin descripción',
-                    'sku' => 'QP-' . substr(md5($batchId . ($item['description'] ?? '')), 0, 8),
+                    'sku' => $sku,
                     'descripcion' => $item['description'] ?? '',
                     'cantidad' => $item['qty'] ?? 1,
                     'unidad' => $item['unit'] ?? 'UND',
@@ -288,24 +208,26 @@ class InventarioController extends Controller
                     'series' => $item['series'] ?? null,
                     'material_type' => $item['material_type'] ?? null,
                     'amount' => $item['subtotal'] ?? 0,
-                    'amount_pen' => $item['amount_pen'] ?? ($item['subtotal'] ?? 0),
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ];
+                    'amount_pen' => $item['amount_pen'] ?? ($item['subtotal'] ?? 0)
+                ]);
 
-                $inserted = $this->insertInventoryItem($newProduct);
-                if ($inserted) {
-                    $addedItems[] = $inserted;
-                }
+                $addedItems[] = $product;
             }
+
+            Log::info('Items agregados a inventario desde compras', [
+                'batch_id' => $batchId,
+                'project_id' => $projectId,
+                'items_count' => count($addedItems)
+            ]);
 
             return response()->json([
                 'success' => true,
-                'message' => count($addedItems) . ' items agregados al inventario como apartados',
+                'message' => count($addedItems) . ' items agregados al inventario',
                 'items' => $addedItems
             ]);
 
         } catch (\Exception $e) {
+            Log::error('Error agregando items a inventario: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
@@ -317,8 +239,6 @@ class InventarioController extends Controller
     public function getReservedItems(Request $request)
     {
         try {
-            $this->syncPaidOrdersToInventory();
-
             $items = Producto::where('apartado', true)
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -395,111 +315,6 @@ class InventarioController extends Controller
         return !Producto::where('ubicacion', $location)
             ->where('id', '!=', $productId)
             ->exists();
-    }
-
-    private function insertInventoryItem(array $data)
-    {
-        $columns = Schema::getColumnListing('inventario_productos');
-        $filtered = array_intersect_key($data, array_flip($columns));
-
-        if (empty($filtered)) {
-            return null;
-        }
-
-        if (in_array('sku', $columns, true) && !empty($filtered['sku'])) {
-            $exists = DB::table('inventario_productos')
-                ->where('sku', $filtered['sku'])
-                ->exists();
-
-            if ($exists) {
-                return null;
-            }
-        }
-
-        DB::table('inventario_productos')->insert($filtered);
-
-        return $filtered;
-    }
-
-    private function syncPaidOrdersToInventory(): void
-    {
-        try {
-            $orders = DB::table('purchase_orders')
-                ->join('projects', 'purchase_orders.project_id', '=', 'projects.id')
-                ->select('purchase_orders.*', 'projects.name as project_name')
-                ->where('purchase_orders.type', 'material')
-                ->where('purchase_orders.payment_confirmed', true)
-                ->orderBy('purchase_orders.payment_confirmed_at', 'desc')
-                ->limit(200)
-                ->get();
-
-            foreach ($orders as $order) {
-                $materials = $order->materials ? json_decode($order->materials, true) : [];
-                $batchId = $order->batch_id ?: ('PAY-' . date('Ymd') . '-' . $order->id);
-
-                $items = [];
-                if (is_array($materials) && count($materials) > 0) {
-                    foreach ($materials as $material) {
-                        $items[] = [
-                            'description' => $material['description'] ?? $order->description,
-                            'qty' => $material['qty'] ?? 1,
-                            'unit' => $material['unit'] ?? $order->unit ?? 'UND',
-                            'subtotal' => $order->amount ?? 0,
-                            'currency' => $order->currency ?? 'PEN',
-                            'diameter' => $material['diameter'] ?? null,
-                            'series' => $material['series'] ?? null,
-                            'material_type' => $material['material_type'] ?? null,
-                            'amount_pen' => $order->amount_pen ?? $order->amount ?? 0
-                        ];
-                    }
-                } else {
-                    $items[] = [
-                        'description' => $order->description,
-                        'qty' => 1,
-                        'unit' => $order->unit ?? 'UND',
-                        'subtotal' => $order->amount ?? 0,
-                        'currency' => $order->currency ?? 'PEN',
-                        'diameter' => $order->diameter ?? null,
-                        'series' => $order->series ?? null,
-                        'material_type' => $order->material_type ?? null,
-                        'amount_pen' => $order->amount_pen ?? $order->amount ?? 0
-                    ];
-                }
-
-                foreach ($items as $item) {
-                    $sku = 'QP-' . substr(md5($batchId . ($item['description'] ?? '')), 0, 8);
-
-                    $newProduct = [
-                        'nombre' => $item['description'] ?? 'Material sin descripción',
-                        'sku' => $sku,
-                        'descripcion' => $item['description'] ?? '',
-                        'cantidad' => $item['qty'] ?? 1,
-                        'unidad' => $item['unit'] ?? 'UND',
-                        'precio' => $item['subtotal'] ?? 0,
-                        'moneda' => $item['currency'] ?? 'PEN',
-                        'categoria' => 'Materiales Comprados',
-                        'ubicacion' => null,
-                        'estado' => 'activo',
-                        'apartado' => true,
-                        'nombre_proyecto' => $order->project_name,
-                        'estado_ubicacion' => 'pendiente',
-                        'project_id' => $order->project_id,
-                        'batch_id' => $batchId,
-                        'diameter' => $item['diameter'] ?? null,
-                        'series' => $item['series'] ?? null,
-                        'material_type' => $item['material_type'] ?? null,
-                        'amount' => $item['subtotal'] ?? 0,
-                        'amount_pen' => $item['amount_pen'] ?? ($item['subtotal'] ?? 0),
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ];
-
-                    $this->insertInventoryItem($newProduct);
-                }
-            }
-        } catch (\Exception $e) {
-            \Log::error('Error syncing paid orders to inventory: ' . $e->getMessage());
-        }
     }
 }
 
