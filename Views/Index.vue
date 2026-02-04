@@ -297,7 +297,10 @@ import './inventario.css';
 
 // Polling interval para tiempo real
 let pollingInterval = null;
-const POLLING_INTERVAL_MS = 5000; // 5 segundos
+const POLLING_INTERVAL_MS = 3000; // 3 segundos
+
+// Helper para comparar arrays y evitar re-renders innecesarios
+const arraysEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 // Constantes
 const categories = ['Electrónica', 'Químicos', 'Mobiliario', 'EPP', 'Accesorios', 'Herramientas', 'Otros'];
@@ -332,12 +335,12 @@ const locationForm = ref({
     posicion: 1
 });
 
-// API Fetch (Simulado)
+// API Fetch - Solo actualiza si hay cambios para evitar parpadeo
 const fetchProducts = async () => {
     try {
         const response = await fetch('/api/inventario_krsft/list');
         const data = await response.json();
-        if (data.success) {
+        if (data.success && !arraysEqual(products.value, data.products)) {
             products.value = data.products;
         }
     } catch (error) {
@@ -509,7 +512,7 @@ const fetchReservedItems = async () => {
     try {
         const response = await fetch('/api/inventario_krsft/reserved-items');
         const data = await response.json();
-        if (data.success) {
+        if (data.success && !arraysEqual(reservedItems.value, data.reserved_items)) {
             reservedItems.value = data.reserved_items;
         }
     } catch (error) {
