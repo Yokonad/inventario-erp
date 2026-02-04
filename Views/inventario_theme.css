@@ -34,6 +34,8 @@
     --inventario-bg-card-dark: rgba(255, 255, 255, 0.1);
     --inventario-bg-light: #f8fafc;
     --inventario-bg-input: #ffffff;
+    --inventario-table-head-bg: #f8fafc;
+    --inventario-hover-bg: rgba(241, 245, 249, 0.7);
 
     /* Textos - Modo Claro */
     --inventario-text-dark: #1e293b;
@@ -57,14 +59,55 @@
     /* Badges */
     --inventario-badge-success-bg: rgba(16, 185, 129, 0.15);
     --inventario-badge-success-text: #10b981;
+    --inventario-badge-success-border: rgba(16, 185, 129, 0.35);
     --inventario-badge-warning-bg: rgba(245, 158, 11, 0.15);
     --inventario-badge-warning-text: #f59e0b;
+    --inventario-badge-warning-border: rgba(245, 158, 11, 0.35);
     --inventario-badge-danger-bg: rgba(239, 68, 68, 0.15);
     --inventario-badge-danger-text: #ef4444;
+    --inventario-badge-danger-border: rgba(239, 68, 68, 0.35);
+
+    /* Apartado badge */
+    --inventario-badge-apartado-bg: rgba(245, 158, 11, 0.18);
+    --inventario-badge-apartado-text: #b45309;
+    --inventario-badge-apartado-border: rgba(245, 158, 11, 0.4);
 
     /* Botones de Acción */
     --inventario-btn-add-bg: #4A90E2;
     --inventario-btn-add-hover: #357ABD;
+
+    /* Botones de Acción */
+    --inventario-btn-edit-bg: rgba(59, 130, 246, 0.12);
+    --inventario-btn-edit-text: #3b82f6;
+    --inventario-btn-edit-hover: rgba(59, 130, 246, 0.22);
+
+    --inventario-btn-delete-bg: rgba(239, 68, 68, 0.12);
+    --inventario-btn-delete-text: #ef4444;
+    --inventario-btn-delete-hover: rgba(239, 68, 68, 0.22);
+
+    --inventario-btn-pin-bg: rgba(245, 158, 11, 0.14);
+    --inventario-btn-pin-text: #f59e0b;
+    --inventario-btn-pin-hover: rgba(245, 158, 11, 0.25);
+
+    /* Inputs */
+    --inventario-input-border: #d1d5db;
+    --inventario-input-focus: #4A90E2;
+    --inventario-input-focus-shadow: rgba(74, 144, 226, 0.2);
+
+    /* Modales */
+    --inventario-modal-overlay: rgba(15, 23, 42, 0.45);
+    --inventario-modal-header-bg: #f8fafc;
+    --inventario-modal-warning-bg: linear-gradient(135deg, #fff7e6, #fdecc8);
+
+    /* Warning tokens */
+    --inventario-warning-dark: #d97706;
+    --inventario-warning-text: #92400e;
+    --inventario-warning-border: #fcd34d;
+    --inventario-warning-soft-bg: rgba(245, 158, 11, 0.12);
+
+    /* Misc */
+    --inventario-location-bg: rgba(74, 144, 226, 0.1);
+    --inventario-znp-bg: rgba(74, 144, 226, 0.06);
 
     /* Transiciones */
     --inventario-transition: all 0.3s ease;
@@ -90,6 +133,8 @@ body.dark-mode {
     --inventario-bg-card-dark: rgba(255, 255, 255, 0.1);
     --inventario-bg-light: #334155;
     --inventario-bg-input: #1e293b;
+    --inventario-table-head-bg: #2a3647;
+    --inventario-hover-bg: rgba(51, 65, 85, 0.6);
 
     /* Textos - Modo Oscuro */
     --inventario-text-dark: #f1f5f9;
@@ -112,4 +157,22 @@ body.dark-mode {
 
     /* Toggle Border - Modo Oscuro */
     --inventario-toggle-border: #f59e0b;
+
+    /* Inputs */
+    --inventario-input-border: #334155;
+    --inventario-input-focus-shadow: rgba(74, 144, 226, 0.25);
+
+    /* Modales */
+    --inventario-modal-overlay: rgba(2, 6, 23, 0.65);
+    --inventario-modal-header-bg: #1e293b;
+    --inventario-modal-warning-bg: linear-gradient(135deg, #3b2f1b, #2a1f12);
+
+    /* Warning tokens */
+    --inventario-warning-text: #fbbf24;
+    --inventario-warning-border: #b45309;
+    --inventario-warning-soft-bg: rgba(245, 158, 11, 0.18);
+
+    /* Misc */
+    --inventario-location-bg: rgba(74, 144, 226, 0.2);
+    --inventario-znp-bg: rgba(74, 144, 226, 0.12);
 }
