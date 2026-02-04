@@ -453,9 +453,51 @@ const saveLocation = async () => {
     }
 };
 
-const saveMaterial = () => {
-    alert(`Guardando material: ${form.value.nombre} en ubicación ${computedLocationCode.value}`);
-    closeModal();
+const saveMaterial = async () => {
+    if (!form.value.nombre || !form.value.categoria || !form.value.unidad) {
+        alert('Por favor completa todos los campos requeridos');
+        return;
+    }
+
+    try {
+        const ubicacion = computedLocationCode.value;
+        const url = isEditing.value 
+            ? `/api/inventario_krsft/${form.value.id}` 
+            : '/api/inventario_krsft/create';
+        const method = isEditing.value ? 'PUT' : 'POST';
+
+        const response = await fetch(url, {
+            method: method,
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                nombre: form.value.nombre,
+                descripcion: form.value.nombre,
+                sku: `SKU-${Date.now()}`,
+                categoria: form.value.categoria,
+                unidad: form.value.unidad,
+                cantidad: form.value.cantidad,
+                precio: 0,
+                moneda: 'PEN',
+                estado: 'activo',
+                ubicacion: ubicacion
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert(`✓ Material ${isEditing.value ? 'actualizado' : 'creado'} correctamente`);
+            closeModal();
+            fetchProducts();
+        } else {
+            alert(`❌ Error: ${data.message || 'No se pudo guardar'}`);
+        }
+    } catch (error) {
+        console.error('Error al guardar material:', error);
+        alert('Error al guardar el material');
+    }
 };
 
 const fetchReservedItems = async () => {
