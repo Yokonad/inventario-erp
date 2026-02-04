@@ -103,7 +103,9 @@
                                             </svg>
                                             APARTADO
                                         </span>
-                                        <span class="apartado-project">{{ item.nombre_proyecto }}</span>
+                                        <span class="project-pill" :style="getProjectPillStyle(item.nombre_proyecto)">
+                                            {{ item.nombre_proyecto }}
+                                        </span>
                                     </div>
                                     <span v-else class="text-muted">-</span>
                                 </td>
@@ -394,6 +396,23 @@ const locationForm = ref({
     nivel: 1,
     posicion: 1
 });
+
+const getProjectPillStyle = (name) => {
+    if (!name) return {};
+    let hash = 0;
+    for (let i = 0; i < name.length; i += 1) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = Math.abs(hash) % 360;
+    const background = `hsl(${hue} 55% 48%)`;
+    const border = `hsl(${hue} 55% 35%)`;
+    const text = '#ffffff';
+    return {
+        backgroundColor: background,
+        borderColor: border,
+        color: text
+    };
+};
 
 // API Fetch - Con sistema de caché para carga instantánea
 const fetchProducts = async () => {
