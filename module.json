@@ -2,7 +2,7 @@
     "name": "InventarioKrsft",
     "slug": "inventario_krsft",
     "display_name": "GESTIÓN DE INVENTARIO",
-    "version": "2.3.5",
+    "version": "2.3.6",
     "description": "Sistema de control de inventario y stock. Tabla inventario_productos con migraciones. Recibe materiales de ComprasKrsft automáticamente. Función de agregar nuevo material funcional.",
     "icon": "icon.svg",
     "color": "#4A90E2",
