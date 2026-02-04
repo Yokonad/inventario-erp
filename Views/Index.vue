@@ -170,8 +170,10 @@
                 <div v-if="showModal" class="modal-overlay">
                     <div class="modal-card">
                         <div class="modal-header">
-                            <h2 class="modal-title">{{ isEditing ? 'Editar Material' : 'Nuevo Material' }}</h2>
-                            <button @click="closeModal" class="modal-close">&times;</button>
+                            <div class="modal-header-text">
+                                <h2 class="modal-title">NUEVO MATERIAL</h2>
+                                <p class="modal-subtitle">Registra un nuevo material para control de stock y ubicación ZNP.</p>
+                            </div>
                         </div>
                         
                         <div class="modal-body">
@@ -238,7 +240,7 @@
                                 </div>
 
                                 <div class="modal-actions">
-                                    <button type="button" @click="closeModal" class="btn-secondary">Cancelar</button>
+                                    <button type="button" @click="closeModal" class="btn-secondary is-danger">Cancelar</button>
                                     <button type="submit" class="btn-primary">Guardar Material</button>
                                 </div>
                             </form>

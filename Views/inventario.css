@@ -568,6 +568,18 @@ body.dark-mode .theme-toggle .sun-icon {
     gap: 10px;
 }
 
+.modal-header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.modal-subtitle {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--inventario-text-gray);
+}
+
 .modal-title--warning {
     color: var(--inventario-text-white);
 }
