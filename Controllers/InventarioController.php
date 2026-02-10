@@ -48,24 +48,23 @@ class InventarioController extends Controller
     public function stats()
     {
         $totalItems = Producto::count();
-        $totalValueUsd = 0;
+        $activeItems = Producto::where('estado', 'activo')->count();
+        $stockAlert = Producto::where('cantidad', '<=', 5)->count();
 
-        $products = Producto::all();
-        foreach ($products as $p) {
-            if ($p->moneda === 'USD') {
-                $totalValueUsd += ($p->precio * $p->cantidad);
-            } else {
-                $totalValueUsd += (($p->precio / 3.75) * $p->cantidad);
-            }
-        }
+        // Calcular valor total en USD con una sola consulta SQL
+        $exchangeRate = floatval(config('modules.inventario.exchange_rate', 3.75));
+        $totalValueUsd = Producto::selectRaw(
+            'COALESCE(SUM(CASE WHEN moneda = ? THEN precio * cantidad ELSE (precio / ?) * cantidad END), 0) as total',
+            ['USD', $exchangeRate]
+        )->value('total');
 
         return response()->json([
             'success' => true,
             'stats' => [
                 'total_products' => $totalItems,
-                'active_products' => Producto::where('estado', 'activo')->count(),
-                'total_value_usd' => round($totalValueUsd, 2),
-                'stock_alert' => Producto::where('cantidad', '<=', 5)->count()
+                'active_products' => $activeItems,
+                'total_value_usd' => round(floatval($totalValueUsd), 2),
+                'stock_alert' => $stockAlert
             ]
         ]);
     }
@@ -233,7 +232,7 @@ class InventarioController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Error agregando items a inventario: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Error interno al agregar items'], 500);
         }
     }
 
@@ -255,7 +254,8 @@ class InventarioController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            Log::error('Error en getReservedItems', ['error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Error interno al obtener items reservados'], 500);
         }
     }
 
@@ -308,7 +308,8 @@ class InventarioController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            Log::error('Error en assignLocation', ['error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Error interno al asignar ubicación'], 500);
         }
     }
 
@@ -356,7 +357,8 @@ class InventarioController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            Log::error('Error en verify', ['error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Error interno al verificar producto'], 500);
         }
     }
 
@@ -398,7 +400,8 @@ class InventarioController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            Log::error('Error en createReporte', ['error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Error interno al crear reporte'], 500);
         }
     }
 
@@ -418,7 +421,8 @@ class InventarioController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            Log::error('Error en listReportes', ['error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Error interno al listar reportes'], 500);
         }
     }
 
@@ -458,7 +462,8 @@ class InventarioController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            Log::error('Error en updateReporte', ['error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Error interno al actualizar reporte'], 500);
         }
     }
 
@@ -481,8 +486,8 @@ class InventarioController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            Log::error('Error en deleteReporte', ['error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Error interno al eliminar reporte'], 500);
         }
     }
 }
-

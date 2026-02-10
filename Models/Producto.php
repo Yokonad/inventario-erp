@@ -36,6 +36,6 @@ class Producto extends Model
     protected $casts = [
         'apartado' => 'boolean',
         'cantidad' => 'integer',
-        'price' => 'float'
+        'precio' => 'float'
     ];
 }
