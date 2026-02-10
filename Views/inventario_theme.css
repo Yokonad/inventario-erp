@@ -126,6 +126,13 @@
     --inventario-location-bg: rgba(74, 144, 226, 0.1);
     --inventario-znp-bg: rgba(74, 144, 226, 0.06);
 
+    /* Menú Desplegable */
+    --inventario-action-menu-trigger-bg: #ffffff;
+    --inventario-action-menu-trigger-hover: #f8fafc;
+    --inventario-dropdown-bg: #ffffff;
+    --inventario-dropdown-hover: #f1f5f9;
+    --inventario-text-primary: #1e293b;
+
     /* Transiciones */
     --inventario-transition: all 0.3s ease;
     --inventario-transition-fast: all 0.2s ease;
@@ -192,6 +199,13 @@ body.dark-mode {
     /* Misc */
     --inventario-location-bg: rgba(74, 144, 226, 0.2);
     --inventario-znp-bg: rgba(74, 144, 226, 0.12);
+
+    /* Menú Desplegable - Modo Oscuro */
+    --inventario-action-menu-trigger-bg: #1e293b;
+    --inventario-action-menu-trigger-hover: #334155;
+    --inventario-dropdown-bg: #1e293b;
+    --inventario-dropdown-hover: #334155;
+    --inventario-text-primary: #f1f5f9;
 
     /* Verificación - Modo Oscuro */
     --inventario-verification-bg: rgba(16, 185, 129, 0.15);
