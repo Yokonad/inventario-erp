@@ -2,7 +2,7 @@
     "name": "InventarioKrsft",
     "slug": "inventario_krsft",
     "display_name": "INVENTARIO",
-    "version": "2.8.3",
+    "version": "2.8.4",
     "description": "Sistema de control de inventario y stock. NUEVO: Unidad digitada (no select). Sistema de REPORTES para materiales con proyecto asignado - notificar material no recibido en obra. Vista dedicada para gestionar reportes (pendientes/revisados/resueltos). Menú desplegable mejorado en columna de Acciones. Filtros compactos de reportes con números. Modal detallado optimizado para revisar y resolver problemas con seguimiento de soluciones.",
     "icon": "icon.svg",
     "color": "#4A90E2",
