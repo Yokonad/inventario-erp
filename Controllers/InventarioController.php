@@ -316,5 +316,43 @@ class InventarioController extends Controller
             ->where('id', '!=', $productId)
             ->exists();
     }
+
+    /**
+     * Verificar producto
+     * POST /api/inventario_krsft/verify/{id}
+     */
+    public function verify(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'usuario' => 'required|string'
+            ]);
+
+            $product = Producto::find($id);
+            if (!$product) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Producto no encontrado'
+                ], 404);
+            }
+
+            $product->update([
+                'verificado_at' => now(),
+                'verificado_por' => $request->input('usuario')
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Producto verificado correctamente',
+                'data' => [
+                    'verificado_at' => $product->verificado_at,
+                    'verificado_por' => $product->verificado_por
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
 }
 

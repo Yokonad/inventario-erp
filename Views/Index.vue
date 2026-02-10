@@ -83,6 +83,7 @@
                                 <th class="table-head-cell">Proyecto</th>
                                 <th class="table-head-cell">Ubicación</th>
                                 <th class="table-head-cell is-center">Estado</th>
+                                <th class="table-head-cell is-center">Verificación</th>
                                 <th class="table-head-cell is-center">Acciones</th>
                             </tr>
                         </thead>
@@ -134,11 +135,23 @@
                                     </span>
                                 </td>
                                 <td class="table-cell is-center">
+                                    <div v-if="item.verificado_at" class="verification-info" :title="`Verificado por: ${item.verificado_por}`">
+                                        <span class="verification-date">{{ formatDate(item.verificado_at) }}</span>
+                                    </div>
+                                    <span v-else class="text-muted">-</span>
+                                </td>
+                                <td class="table-cell is-center">
                                     <div class="action-buttons">
                                         <button v-if="item.apartado && !item.ubicacion" @click="openLocationModal(item)" title="Asignar Ubicación" class="action-btn action-btn--pin">
                                             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M12 22s6-4 6-10a6 6 0 0 0-12 0c0 6 6 10 6 10z"/>
                                                 <circle cx="12" cy="12" r="2"/>
+                                            </svg>
+                                        </button>
+                                        <button @click="verifyProduct(item)" title="Verificar" class="action-btn action-btn--verify">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M9 11l3 3L22 4"/>
+                                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
                                             </svg>
                                         </button>
                                         <button @click="openModal(item)" title="Editar" class="action-btn action-btn--edit">
@@ -723,6 +736,48 @@ onUnmounted(() => {
 
 const goBack = () => {
     window.location.href = '/';
+};
+
+const formatDate = (dateString) => {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+};
+
+const verifyProduct = async (item) => {
+    // Obtener el nombre del usuario actual (puedes ajustar esto según tu sistema de autenticación)
+    const usuario = window.userName || 'Usuario';
+    
+    if (!confirm(`¿Deseas verificar "${item.nombre}"?`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/inventario_krsft/verify/${item.id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+            },
+            body: JSON.stringify({ usuario })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert('✓ Producto verificado correctamente');
+            fetchProducts();
+            fetchReservedItems();
+        } else {
+            alert(`❌ Error: ${data.message || 'No se pudo verificar'}`);
+        }
+    } catch (error) {
+        console.error('Error al verificar producto:', error);
+        alert('Error al verificar el producto');
+    }
 };
 </script>
 

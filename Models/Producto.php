@@ -28,7 +28,9 @@ class Producto extends Model
         'series',
         'material_type',
         'amount',
-        'amount_pen'
+        'amount_pen',
+        'verificado_at',
+        'verificado_por'
     ];
 
     protected $casts = [

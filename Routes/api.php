@@ -19,3 +19,6 @@ Route::delete('/{id}', "{$ctrl}@destroy")->where('id', '[0-9]+');
 Route::post('/add-from-purchase', "{$ctrl}@addPurchasedItems");
 Route::get('/reserved-items', "{$ctrl}@getReservedItems");
 Route::post('/assign-location', "{$ctrl}@assignLocation");
+
+// Verification
+Route::post('/verify/{id}', "{$ctrl}@verify")->where('id', '[0-9]+');

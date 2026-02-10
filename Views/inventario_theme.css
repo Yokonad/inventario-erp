@@ -89,6 +89,19 @@
     --inventario-btn-pin-text: #f59e0b;
     --inventario-btn-pin-hover: rgba(245, 158, 11, 0.25);
 
+    --inventario-btn-verify-bg: rgba(16, 185, 129, 0.12);
+    --inventario-btn-verify-text: #10b981;
+    --inventario-btn-verify-hover: rgba(16, 185, 129, 0.22);
+
+    /* Verificación */
+    --inventario-verification-bg: rgba(16, 185, 129, 0.08);
+    --inventario-verification-hover: rgba(16, 185, 129, 0.15);
+    --inventario-success-border: rgba(16, 185, 129, 0.35);
+
+    /* Tooltip */
+    --inventario-tooltip-bg: #1e293b;
+    --inventario-tooltip-text: #f1f5f9;
+
     /* Inputs */
     --inventario-input-border: #d1d5db;
     --inventario-input-focus: #4A90E2;
@@ -175,4 +188,13 @@ body.dark-mode {
     /* Misc */
     --inventario-location-bg: rgba(74, 144, 226, 0.2);
     --inventario-znp-bg: rgba(74, 144, 226, 0.12);
+
+    /* Verificación - Modo Oscuro */
+    --inventario-verification-bg: rgba(16, 185, 129, 0.15);
+    --inventario-verification-hover: rgba(16, 185, 129, 0.25);
+    --inventario-success-border: rgba(16, 185, 129, 0.4);
+
+    /* Tooltip - Modo Oscuro */
+    --inventario-tooltip-bg: #0f172a;
+    --inventario-tooltip-text: #f1f5f9;
 }
