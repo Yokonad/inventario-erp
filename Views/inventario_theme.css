@@ -93,6 +93,10 @@
     --inventario-btn-verify-text: #10b981;
     --inventario-btn-verify-hover: rgba(16, 185, 129, 0.22);
 
+    --inventario-btn-report-bg: rgba(245, 158, 11, 0.12);
+    --inventario-btn-report-text: #f59e0b;
+    --inventario-btn-report-hover: rgba(245, 158, 11, 0.22);
+
     /* Verificación */
     --inventario-verification-bg: rgba(16, 185, 129, 0.08);
     --inventario-verification-hover: rgba(16, 185, 129, 0.15);

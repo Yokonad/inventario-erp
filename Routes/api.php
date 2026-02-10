@@ -22,3 +22,8 @@ Route::post('/assign-location', "{$ctrl}@assignLocation");
 
 // Verification
 Route::post('/verify/{id}', "{$ctrl}@verify")->where('id', '[0-9]+');
+
+// Reportes
+Route::post('/reportes', "{$ctrl}@createReporte");
+Route::get('/reportes', "{$ctrl}@listReportes");
+Route::put('/reportes/{id}', "{$ctrl}@updateReporte")->where('id', '[0-9]+');

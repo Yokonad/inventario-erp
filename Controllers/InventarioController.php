@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modulos_ERP\InventarioKrsft\Models\Producto;
+use Modulos_ERP\InventarioKrsft\Models\Reporte;
 
 class InventarioController extends Controller
 {
@@ -352,6 +353,103 @@ class InventarioController extends Controller
                     'verificado_at' => $product->verificado_at,
                     'verificado_por' => $product->verificado_por
                 ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Crear reporte de material no recibido en obra
+     * POST /api/inventario_krsft/reportes
+     */
+    public function createReporte(Request $request)
+    {
+        try {
+            $request->validate([
+                'producto_id' => 'required|integer',
+                'motivo' => 'required|string',
+                'reportado_por' => 'required|string'
+            ]);
+
+            $product = Producto::find($request->input('producto_id'));
+            if (!$product) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Producto no encontrado'
+                ], 404);
+            }
+
+            $reporte = Reporte::create([
+                'producto_id' => $product->id,
+                'producto_nombre' => $product->nombre,
+                'producto_sku' => $product->sku,
+                'proyecto_nombre' => $product->nombre_proyecto ?? 'Sin proyecto',
+                'motivo' => $request->input('motivo'),
+                'reportado_por' => $request->input('reportado_por'),
+                'estado' => 'pendiente'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Reporte creado correctamente',
+                'data' => $reporte
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Listar todos los reportes
+     * GET /api/inventario_krsft/reportes
+     */
+    public function listReportes(Request $request)
+    {
+        try {
+            $reportes = Reporte::orderBy('created_at', 'desc')->get();
+
+            return response()->json([
+                'success' => true,
+                'reportes' => $reportes,
+                'total' => $reportes->count()
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Actualizar estado de reporte
+     * PUT /api/inventario_krsft/reportes/{id}
+     */
+    public function updateReporte(Request $request, $id)
+    {
+        try {
+            $reporte = Reporte::find($id);
+            if (!$reporte) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Reporte no encontrado'
+                ], 404);
+            }
+
+            $data = $request->only(['estado', 'notas']);
+            
+            if ($request->has('estado') && $request->input('estado') === 'revisado') {
+                $data['revisado_at'] = now();
+                $data['revisado_por'] = $request->input('revisado_por', 'Sistema');
+            }
+
+            $reporte->update($data);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Reporte actualizado correctamente',
+                'data' => $reporte
             ]);
 
         } catch (\Exception $e) {

@@ -42,6 +42,32 @@
 
             <main class="module-content">
                 
+                <!-- Tabs de Navegación -->
+                <div class="tabs-nav">
+                    <button 
+                        @click="currentTab = 'inventario'" 
+                        :class="['tab-btn', { 'is-active': currentTab === 'inventario' }]">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        </svg>
+                        Inventario
+                        <span class="tab-badge">{{ filteredItems.length }}</span>
+                    </button>
+                    <button 
+                        @click="currentTab = 'reportes'" 
+                        :class="['tab-btn', { 'is-active': currentTab === 'reportes' }]">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                        Reportes
+                        <span v-if="reportes.filter(r => r.estado === 'pendiente').length > 0" class="tab-badge tab-badge--alert">{{ reportes.filter(r => r.estado === 'pendiente').length }}</span>
+                    </button>
+                </div>
+                
+                <!-- Vista de Inventario -->
+                <div v-show="currentTab === 'inventario'" class="tab-content">
                 <!-- Barra de Filtros -->
                 <div class="filter-bar">
                     <div class="filter-field filter-field--search">
@@ -148,6 +174,13 @@
                                                 <circle cx="12" cy="12" r="2"/>
                                             </svg>
                                         </button>
+                                        <button v-if="item.apartado && item.nombre_proyecto" @click="openReportModal(item)" title="Reportar problema" class="action-btn action-btn--report">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                                            </svg>
+                                        </button>
                                         <button @click="verifyProduct(item)" title="Verificar" class="action-btn action-btn--verify">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M9 11l3 3L22 4"/>
@@ -209,10 +242,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Unidad</label>
-                                        <select v-model="form.unidad" class="input-field" required>
-                                            <option value="">Seleccionar...</option>
-                                            <option v-for="unit in units" :key="unit" :value="unit">{{ unit }}</option>
-                                        </select>
+                                        <input v-model="form.unidad" type="text" class="input-field" placeholder="Ej: UND, KG, M, LT" required />
                                     </div>
                                 </div>
 
@@ -373,6 +403,54 @@
                 </div>
             </Teleport>
 
+            <!-- Modal de Reporte -->
+            <Teleport to="body">
+                <div v-if="showReportModal" class="modal-overlay" @click.self="closeReportModal">
+                    <div class="modal-report">
+                        <div class="modal-report-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                        </div>
+                        <h3 class="modal-report-title">Reportar Material</h3>
+                        <p class="modal-report-subtitle">Material no recibido en obra</p>
+                        
+                        <div class="modal-report-product">
+                            <div class="report-product-name">{{ reportingProduct?.nombre }}</div>
+                            <div class="report-product-project">Proyecto: {{ reportingProduct?.nombre_proyecto }}</div>
+                        </div>
+
+                        <form @submit.prevent="confirmReport">
+                            <div class="form-group">
+                                <label class="form-label">Motivo del reporte</label>
+                                <textarea 
+                                    v-model="reportMotivo" 
+                                    class="textarea-field" 
+                                    placeholder="Describe el problema (ej: Material no llegó a obra, se necesita verificar si está en inventario o no se compró)" 
+                                    rows="4"
+                                    required
+                                ></textarea>
+                            </div>
+
+                            <div class="modal-report-actions">
+                                <button type="button" @click="closeReportModal" class="btn-report-cancel">
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="btn-report-confirm">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                    </svg>
+                                    Enviar Reporte
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </Teleport>
+
         </div>
     </div>
 </template>
@@ -431,15 +509,20 @@ const units = ['Unidad', 'Galón', 'Metro', 'Kg', 'Litro', 'Caja'];
 // Estado
 const products = ref([]);
 const reservedItems = ref([]);
+const reportes = ref([]);
+const currentTab = ref('inventario');
 const searchQuery = ref('');
 const filterCategory = ref('');
 const filterStatus = ref('');
 const showModal = ref(false);
 const showLocationModal = ref(false);
 const showVerifyModal = ref(false);
+const showReportModal = ref(false);
 const isEditing = ref(false);
 const selectedReservedItem = ref(null);
 const verifyingProduct = ref(null);
+const reportingProduct = ref(null);
+const reportMotivo = ref('');
 const loadingLocation = ref(false);
 
 const form = ref({
@@ -764,11 +847,13 @@ onMounted(() => {
     // 2. Fetch en background para actualizar si hay cambios
     fetchProducts();
     fetchReservedItems();
+    fetchReportes();
     
     // 3. Iniciar polling para tiempo real
     pollingInterval = setInterval(() => {
         fetchProducts();
         fetchReservedItems();
+        fetchReportes();
     }, POLLING_INTERVAL_MS);
 });
 
@@ -834,6 +919,100 @@ const confirmVerify = async () => {
         alert('Error al verificar el producto');
     }
 };
+
+// Funciones de Reportes
+const fetchReportes = async () => {
+    try {
+        const response = await fetch('/api/inventario_krsft/reportes');
+        const data = await response.json();
+        if (data.success) {
+            reportes.value = data.reportes || [];
+        }
+    } catch (error) {
+        console.error("Error fetching reportes:", error);
+    }
+};
+
+const openReportModal = (item) => {
+    reportingProduct.value = item;
+    reportMotivo.value = '';
+    showReportModal.value = true;
+};
+
+const closeReportModal = () => {
+    showReportModal.value = false;
+    reportingProduct.value = null;
+    reportMotivo.value = '';
+};
+
+const confirmReport = async () => {
+    if (!reportingProduct.value || !reportMotivo.value.trim()) {
+        alert('Por favor describe el motivo del reporte');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/inventario_krsft/reportes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+            },
+            body: JSON.stringify({
+                producto_id: reportingProduct.value.id,
+                motivo: reportMotivo.value,
+                reportado_por: currentUserName.value
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert('✓ Reporte enviado correctamente');
+            closeReportModal();
+            fetchReportes();
+            currentTab.value = 'reportes';
+        } else {
+            alert(`❌ Error: ${data.message || 'No se pudo crear el reporte'}`);
+        }
+    } catch (error) {
+        console.error('Error al crear reporte:', error);
+        alert('Error al crear el reporte');
+    }
+};
+
+const marcarRevisado = async (reporte) => {
+    if (!confirm(`¿Marcar como revisado el reporte de "${reporte.producto_nombre}"?`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/inventario_krsft/reportes/${reporte.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+            },
+            body: JSON.stringify({
+                estado: 'revisado',
+                revisado_por: currentUserName.value
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert('✓ Reporte marcado como revisado');
+            fetchReportes();
+        } else {
+            alert(`❌ Error: ${data.message || 'No se pudo actualizar'}`);
+        }
+    } catch (error) {
+        console.error('Error al actualizar reporte:', error);
+        alert('Error al actualizar el reporte');
+    }
+};
+
 </script>
 
 <style>
