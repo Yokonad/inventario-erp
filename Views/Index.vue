@@ -68,6 +68,7 @@
                 
                 <!-- Vista de Inventario -->
                 <div v-show="currentTab === 'inventario'" class="tab-content">
+                
                 <!-- Barra de Filtros -->
                 <div class="filter-bar">
                     <div class="filter-field filter-field--search">
@@ -187,6 +188,13 @@
                                                 <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
                                             </svg>
                                         </button>
+                                        <button v-if="item.apartado && item.nombre_proyecto" @click="openReportModal(item)" title="Reportar problema" class="action-btn action-btn--report">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                                            </svg>
+                                        </button>
                                         <button @click="openModal(item)" title="Editar" class="action-btn action-btn--edit">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                                         </button>
@@ -207,6 +215,100 @@
                             <button class="pagination-btn is-active">1</button>
                             <button disabled class="pagination-btn is-disabled">Siguiente &gt;</button>
                         </div>
+                    </div>
+                </div>
+                </div>
+
+                <!-- Vista de Reportes -->
+                <div v-show="currentTab === 'reportes'" class="tab-content">
+                    <div class="table-card">
+                        <div class="reportes-header">
+                            <h3 class="reportes-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                    <line x1="16" y1="13" x2="8" y2="13"/>
+                                    <line x1="16" y1="17" x2="8" y2="17"/>
+                                    <polyline points="10 9 9 9 8 9"/>
+                                </svg>
+                                Reportes de Materiales
+                            </h3>
+                            <div class="reportes-stats">
+                                <div class="stat-item stat-item--pending">
+                                    <span class="stat-label">Pendientes</span>
+                                    <span class="stat-value">{{ reportes.filter(r => r.estado === 'pendiente').length }}</span>
+                                </div>
+                                <div class="stat-item stat-item--reviewed">
+                                    <span class="stat-label">Revisados</span>
+                                    <span class="stat-value">{{ reportes.filter(r => r.estado === 'revisado').length }}</span>
+                                </div>
+                                <div class="stat-item stat-item--resolved">
+                                    <span class="stat-label">Resueltos</span>
+                                    <span class="stat-value">{{ reportes.filter(r => r.estado === 'resuelto').length }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <table class="inventory-table">
+                            <thead class="table-head">
+                                <tr>
+                                    <th class="table-head-cell">Producto</th>
+                                    <th class="table-head-cell">Proyecto</th>
+                                    <th class="table-head-cell">Motivo</th>
+                                    <th class="table-head-cell">Reportado por</th>
+                                    <th class="table-head-cell">Fecha</th>
+                                    <th class="table-head-cell is-center">Estado</th>
+                                    <th class="table-head-cell is-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="reporte in reportes" :key="reporte.id" class="table-row">
+                                    <td class="table-cell">
+                                        <div class="product-name">{{ reporte.producto_nombre }}</div>
+                                        <div class="product-sku">{{ reporte.producto_sku }}</div>
+                                    </td>
+                                    <td class="table-cell">
+                                        <span class="project-badge">{{ reporte.proyecto_nombre }}</span>
+                                    </td>
+                                    <td class="table-cell">
+                                        <div class="reporte-motivo">{{ reporte.motivo }}</div>
+                                    </td>
+                                    <td class="table-cell">{{ reporte.reportado_por }}</td>
+                                    <td class="table-cell">
+                                        <div class="reporte-date">{{ formatDate(reporte.created_at) }}</div>
+                                    </td>
+                                    <td class="table-cell is-center">
+                                        <span class="status-badge" 
+                                            :class="{
+                                                'pending': reporte.estado === 'pendiente',
+                                                'reviewed': reporte.estado === 'revisado',
+                                                'approved': reporte.estado === 'resuelto'
+                                            }">
+                                            {{ reporte.estado === 'pendiente' ? 'Pendiente' : (reporte.estado === 'revisado' ? 'Revisado' : 'Resuelto') }}
+                                        </span>
+                                    </td>
+                                    <td class="table-cell is-center">
+                                        <div class="action-buttons">
+                                            <button v-if="reporte.estado === 'pendiente'" @click="marcarRevisado(reporte)" title="Marcar como revisado" class="action-btn action-btn--verify">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <polyline points="20 6 9 17 4 12"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr v-if="reportes.length === 0">
+                                    <td colspan="7" class="table-cell is-center" style="padding: 40px; color: var(--inventario-text-gray);">
+                                        <svg style="width: 48px; height: 48px; margin: 0 auto 12px; display: block; opacity: 0.5;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                        </svg>
+                                        No hay reportes registrados
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </main>
