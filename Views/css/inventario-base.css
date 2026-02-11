@@ -28,10 +28,21 @@
     border-color: var(--inventario-toggle-border);
 }
 
-body:not(.dark-mode) .theme-toggle .moon-icon { display: block; }
-body:not(.dark-mode) .theme-toggle .sun-icon { display: none; }
-body.dark-mode .theme-toggle .moon-icon { display: none; }
-body.dark-mode .theme-toggle .sun-icon { display: block; }
+body:not(.dark-mode) .theme-toggle .moon-icon {
+    display: block;
+}
+
+body:not(.dark-mode) .theme-toggle .sun-icon {
+    display: none;
+}
+
+body.dark-mode .theme-toggle .moon-icon {
+    display: none;
+}
+
+body.dark-mode .theme-toggle .sun-icon {
+    display: block;
+}
 
 /* ---- Tabs de navegación ---- */
 .tabs-nav {
@@ -58,9 +69,20 @@ body.dark-mode .theme-toggle .sun-icon { display: block; }
     margin-bottom: -2px;
 }
 
-.tab-btn svg { width: 20px; height: 20px; }
-.tab-btn:hover { color: var(--inventario-primary); background: var(--bg-light); }
-.tab-btn.is-active { color: var(--inventario-primary); border-bottom-color: var(--inventario-primary); }
+.tab-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.tab-btn:hover {
+    color: var(--inventario-primary);
+    background: var(--bg-light);
+}
+
+.tab-btn.is-active {
+    color: var(--inventario-primary);
+    border-bottom-color: var(--inventario-primary);
+}
 
 .tab-badge {
     display: inline-flex;
@@ -83,11 +105,20 @@ body.dark-mode .theme-toggle .sun-icon { display: block; }
 }
 
 @keyframes pulseAlert {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
 }
 
-.tab-content { animation: fadeIn 0.3s ease; }
+.tab-content {
+    animation: fadeIn 0.3s ease;
+}
 
 /* ---- Botón primario del módulo (azul) ---- */
 .btn-primary {
@@ -111,9 +142,38 @@ body.dark-mode .theme-toggle .sun-icon { display: block; }
 }
 
 /* ---- Utilidades compartidas ---- */
-.icon { width: 16px; height: 16px; }
-.icon-pin { width: 18px; height: 18px; }
-.text-muted { color: var(--text-light); }
+.icon {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-pin {
+    width: 18px;
+    height: 18px;
+}
+
+.text-muted {
+    color: var(--text-light);
+}
+
+/* ---- Optimización de Scroll & Fluidez ---- */
+.marketplace-layout,
+.marketplace-container,
+.module-content {
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE/Edge */
+    scroll-behavior: smooth;
+}
+
+.marketplace-layout::-webkit-scrollbar,
+.marketplace-container::-webkit-scrollbar,
+.module-content::-webkit-scrollbar {
+    display: none;
+    /* Chrome/Safari/Opera */
+}
+
 /* ---- Ajuste de espaciado en header ---- */
 .module-header .header-right {
     gap: 16px;
