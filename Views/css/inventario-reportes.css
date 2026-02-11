@@ -21,13 +21,20 @@
     gap: 12px;
     font-size: 1.2rem;
     font-weight: 700;
-    color: #ffffff;
+    color: #111827;
+    /* Negro/Oscuro en modo día */
     margin: 0;
 }
 
 .reportes-title svg {
     width: 24px;
     height: 24px;
+    color: #111827;
+}
+
+/* Override para modo oscuro */
+body.dark-mode .reportes-title,
+body.dark-mode .reportes-title svg {
     color: #ffffff;
 }
 
