@@ -191,11 +191,12 @@ body.dark-mode .modal-header {
     border-top: 1px dashed var(--inventario-primary);
 }
 
-/* Centrar inputs de ubicación y dales un aire más limpio */
+/* Centrar y organizar inputs de ubicación */
 .znp-box .form-row {
     display: flex;
     justify-content: center;
-    gap: 32px;
+    align-items: flex-start;
+    gap: 24px;
     margin-bottom: 0;
 }
 
@@ -204,6 +205,16 @@ body.dark-mode .modal-header {
     flex-direction: column;
     align-items: center;
     margin-bottom: 0;
+    width: auto;
+}
+
+.znp-box .form-label--small {
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--inventario-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .location-label {
@@ -526,16 +537,18 @@ body.dark-mode .modal-header {
     gap: 16px;
     margin-top: 24px;
     padding: 0;
-    border: none;
-    background: transparent;
-    box-shadow: none;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 .modal-actions .btn-primary,
 .modal-actions .btn-secondary {
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 10px 24px;
     font-size: 0.9rem;
+    height: auto;
+    width: auto;
 }
 
 /* ---- Botones secundarios y de acción ---- */
@@ -667,20 +680,13 @@ body.dark-mode .modal-header {
 
 /* ---- Override inputs ubicación (ajustados) ---- */
 .znp-box .input-field--compact {
-    height: 42px;
-    font-size: 1rem;
+    height: 40px;
+    font-size: 0.95rem;
     font-weight: 700;
     text-align: center;
-    border-radius: 10px;
-    padding: 0 10px;
-    min-width: 70px;
+    border-radius: 8px;
+    padding: 0 8px;
+    min-width: 65px;
     background: var(--bg-white);
     border: 2px solid var(--border-color);
-}
-
-.znp-box .form-label--small {
-    font-size: 0.9rem;
-    color: var(--inventario-primary);
-    margin-bottom: 8px;
-    text-align: center;
 }
