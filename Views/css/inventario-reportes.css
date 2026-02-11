@@ -21,14 +21,14 @@
     gap: 12px;
     font-size: 1.2rem;
     font-weight: 700;
-    color: var(--color-danger);
+    color: #ffffff;
     margin: 0;
 }
 
 .reportes-title svg {
     width: 24px;
     height: 24px;
-    color: var(--color-danger);
+    color: #ffffff;
 }
 
 /* ---- Filtros de estado compactos ---- */

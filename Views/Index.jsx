@@ -89,7 +89,7 @@ export default function InventarioIndex({ auth }) {
                         </button>
                         <button
                             onClick={() => inv.setCurrentTab('reportes')}
-                            className={`tab-btn${inv.currentTab === 'reportes' ? ' is-active' : ''}`}
+                            className={`tab-btn tab-btn--reportes${inv.currentTab === 'reportes' ? ' is-active' : ''}`}
                         >
                             {WarningTriangleIcon}
                             Reportes

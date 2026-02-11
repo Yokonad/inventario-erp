@@ -84,6 +84,16 @@ body.dark-mode .theme-toggle .sun-icon {
     border-bottom-color: var(--inventario-primary);
 }
 
+/* ---- Variante Roja para Reportes ---- */
+.tab-btn--reportes:hover {
+    color: var(--color-danger);
+}
+
+.tab-btn--reportes.is-active {
+    color: var(--color-danger) !important;
+    border-bottom-color: var(--color-danger) !important;
+}
+
 .tab-badge {
     display: inline-flex;
     align-items: center;
