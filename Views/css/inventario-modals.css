@@ -121,17 +121,21 @@ body.dark-mode .modal-header {
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .form-group--spaced {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .form-row {
     display: flex;
     gap: 16px;
-    margin-bottom: 16px;
+    margin-bottom: 4px;
+}
+
+.form-row .form-group {
+    margin-bottom: 0;
 }
 
 .form-row--compact {
