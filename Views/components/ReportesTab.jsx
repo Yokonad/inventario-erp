@@ -1,5 +1,5 @@
 import { formatDate } from '../utils/helpers';
-import { DocLinesIcon, EyeIcon, EmptyCircleIcon } from './Icons';
+import { DocLinesIcon, EyeIcon, ClockIcon } from './Icons';
 
 /**
  * Reportes tab with filter buttons and report table.
@@ -98,7 +98,7 @@ export default function ReportesTab({
                     {filteredReportes.length === 0 && (
                         <tr>
                             <td colSpan="7" className="table-cell is-center" style={{ padding: 40, color: 'var(--text-gray)' }}>
-                                {EmptyCircleIcon}
+                                {ClockIcon}
                                 No hay reportes {filterReporteEstado ? `con estado "${filterReporteEstado}"` : 'registrados'}
                             </td>
                         </tr>
