@@ -114,3 +114,7 @@ body.dark-mode .theme-toggle .sun-icon { display: block; }
 .icon { width: 16px; height: 16px; }
 .icon-pin { width: 18px; height: 18px; }
 .text-muted { color: var(--text-light); }
+/* ---- Ajuste de espaciado en header ---- */
+.module-header .header-right {
+    gap: 16px;
+}
