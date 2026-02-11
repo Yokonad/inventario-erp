@@ -131,7 +131,7 @@ body.dark-mode .modal-header {
 .form-row {
     display: flex;
     gap: 16px;
-    margin-bottom: 4px;
+    margin-bottom: 12px;
 }
 
 .form-row .form-group {
