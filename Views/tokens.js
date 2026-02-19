@@ -79,8 +79,8 @@ export const LAYOUT_CLASSES = {
     viewport: 'relative w-screen h-screen overflow-hidden',
     // Fondo animado del módulo (gradiente azul)
     bg: 'absolute inset-0 bg-gradient-to-br from-teal-500 to-blue-600 z-0',
-    // Contenedor principal flotante
-    container: 'relative z-10 flex flex-col h-full bg-white',
+    // Contenedor principal flotante con márgenes para mostrar el fondo
+    container: 'relative z-10 flex flex-col h-full max-w-[98%] max-h-[96%] m-auto bg-white rounded-2xl shadow-2xl overflow-hidden',
     // Contenido scrollable
     content: 'flex-1 overflow-y-auto overflow-x-hidden scrollbar-none p-8',
 };
