@@ -17,6 +17,7 @@ import './css/inventario-layout.css';
 import './css/inventario-table.css';
 import './css/inventario-form.css';
 import './css/inventario-modal.css';
+import './css/inventario-reportes.css';
 
 import { useInventarioData } from './hooks/useInventarioData';
 

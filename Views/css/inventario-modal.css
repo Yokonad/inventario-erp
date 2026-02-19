@@ -1,26 +1,26 @@
 /* ============================================
    INVENTARIO - MODAL STYLES
-   Color: #4A90E2 (blue-500)
+   Color: #0AA4A4 (TEAL)
    ============================================ */
 
 /* Modal Overlay */
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.55);
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    padding: 20px;
-    backdrop-filter: blur(3px);
+    padding: 16px;
+    backdrop-filter: blur(2px);
 }
 
 /* Animations */
 @keyframes slideIn {
     from {
         opacity: 0;
-        transform: translateY(20px) scale(0.98);
+        transform: translateY(16px) scale(0.98);
     }
     to {
         opacity: 1;
@@ -31,7 +31,7 @@
 @keyframes zoomIn {
     from {
         opacity: 0;
-        transform: scale(0.92);
+        transform: scale(0.94);
     }
     to {
         opacity: 1;
@@ -44,8 +44,8 @@
     position: relative;
     width: 100%;
     max-width: 900px;
-    max-height: 80vh;
-    animation: slideIn 0.28s cubic-bezier(0.34, 1.2, 0.64, 1);
+    max-height: 85vh;
+    animation: slideIn 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
     display: flex;
     flex-direction: column;
 }
@@ -53,20 +53,19 @@
 /* Modal Card */
 .modal-form-card {
     background: #ffffff;
-    border-radius: 16px;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     height: 100%;
     max-height: 100%;
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22);
-    border: 1px solid #d1d5db;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e2e8f0;
     overflow: hidden;
-    padding: 0;
 }
 
 /* Modal Header */
 .modal-header {
-    padding: 20px 28px;
+    padding: 20px 24px;
     border-bottom: 1px solid #e2e8f0;
     display: flex;
     flex-direction: row;
@@ -84,7 +83,7 @@
 }
 
 .modal-header h2 {
-    font-size: 22px;
+    font-size: 1.25rem;
     font-weight: 700;
     color: #1e293b;
     margin: 0;
@@ -92,14 +91,14 @@
 
 .modal-header .form-subtitle {
     margin: 0;
-    font-size: 13px;
+    font-size: 0.85rem;
     color: #64748b;
 }
 
 /* Modal Close Button */
 .modal-close-btn {
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
     background: #f1f5f9;
     color: #64748b;
     border: 1px solid #e2e8f0;
@@ -117,17 +116,16 @@
     background: #ef4444;
     color: white;
     border-color: #dc2626;
-    transform: scale(1.05);
 }
 
 .modal-close-btn svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
 }
 
 /* Modal Body */
 .modal-body {
-    padding: 28px 32px;
+    padding: 24px;
     overflow-y: auto;
     flex: 1;
     min-height: 0;
@@ -137,50 +135,50 @@
 /* Delete Modal */
 .delete-modal-card {
     background: #ffffff;
-    padding: 40px;
+    padding: 36px 32px;
     width: 100%;
-    max-width: 450px;
+    max-width: 420px;
     text-align: center;
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22);
-    animation: zoomIn 0.28s cubic-bezier(0.34, 1.2, 0.64, 1);
-    border-radius: 16px;
-    font-size: 14px;
-    border: 1px solid #d1d5db;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    animation: zoomIn 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
 }
 
 .delete-modal-icon {
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
     background: #fee2e2;
     color: #ef4444;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px auto;
+    margin: 0 auto 16px;
 }
 
 .delete-modal-icon svg {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
 }
 
 .delete-modal-card h2 {
-    font-size: 22px;
+    font-size: 1.1rem;
     font-weight: 700;
     color: #1e293b;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .delete-modal-card p {
     color: #64748b;
-    line-height: 1.6;
-    margin-bottom: 28px;
+    line-height: 1.5;
+    margin-bottom: 24px;
+    font-size: 0.9rem;
 }
 
 .delete-modal-actions {
     display: flex;
-    gap: 12px;
+    gap: 10px;
 }
 
 .delete-modal-actions button {
@@ -191,80 +189,80 @@
 /* Verify Modal */
 .verify-modal-card {
     background: #ffffff;
-    padding: 40px;
+    padding: 36px 32px;
     width: 100%;
-    max-width: 420px;
+    max-width: 400px;
     text-align: center;
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22);
-    animation: zoomIn 0.28s cubic-bezier(0.34, 1.2, 0.64, 1);
-    border-radius: 16px;
-    border: 1px solid #d1d5db;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    animation: zoomIn 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
 }
 
 .verify-modal-icon {
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
     background: #dbeafe;
-    color: #3b82f6;
+    color: #0284c7;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px auto;
+    margin: 0 auto 16px;
 }
 
 .verify-modal-icon svg {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
 }
 
 /* Report Modal */
 .report-modal-card {
     background: #ffffff;
-    padding: 40px;
+    padding: 36px 32px;
     width: 100%;
-    max-width: 450px;
+    max-width: 420px;
     text-align: center;
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22);
-    animation: zoomIn 0.28s cubic-bezier(0.34, 1.2, 0.64, 1);
-    border-radius: 16px;
-    border: 1px solid #d1d5db;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    animation: zoomIn 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
 }
 
 .report-modal-icon {
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
     background: #fef3c7;
     color: #f59e0b;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px auto;
+    margin: 0 auto 16px;
 }
 
 .report-modal-icon svg {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
 }
 
 .report-product-info {
     background: #f8fafc;
-    padding: 16px;
-    border-radius: 12px;
-    margin: 20px 0;
+    padding: 14px;
+    border-radius: 10px;
+    margin: 16px 0;
     text-align: left;
 }
 
 .report-product-name {
     font-weight: 600;
     color: #1e293b;
-    font-size: 1rem;
     margin-bottom: 4px;
+    font-size: 0.95rem;
 }
 
 .report-product-project {
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     color: #64748b;
 }
 
@@ -275,18 +273,18 @@
 
 .location-preview-large {
     text-align: center;
-    margin: 24px 0;
+    margin: 20px 0;
 }
 
 .location-code-large {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
-    color: #3b82f6;
-    background: rgba(59, 130, 246, 0.1);
-    padding: 20px 40px;
-    border-radius: 12px;
-    border: 2px dashed #93c5fd;
+    color: #0AA4A4;
+    background: rgba(10, 164, 164, 0.08);
+    padding: 16px 32px;
+    border-radius: 10px;
+    border: 2px dashed #5ee5e5;
     display: inline-block;
 }
 
