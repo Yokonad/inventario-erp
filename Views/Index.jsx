@@ -4,7 +4,6 @@
  * Slim entry component that composes hooks, UI components, and modals.
  * All business logic lives in hooks/useInventarioData.
  * All SVG icons live in components/Icons.jsx.
- * All styles use Tailwind CSS via tokens.js (NO CSS files).
  *
  * Per Vercel React best practices:
  * - bundle-barrel-imports: Direct imports, no barrel re-exports
@@ -12,6 +11,13 @@
  * - rendering-hoist-jsx: All static JSX (icons) hoisted outside
  * - async-parallel: Data fetching uses Promise.all in custom hook
  */
+
+// CSS Imports
+import './css/inventario-layout.css';
+import './css/inventario-table.css';
+import './css/inventario-form.css';
+import './css/inventario-modal.css';
+
 import { useInventarioData } from './hooks/useInventarioData';
 
 // UI Components

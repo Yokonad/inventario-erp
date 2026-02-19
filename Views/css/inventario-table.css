@@ -1,0 +1,305 @@
+/* ============================================================
+   INVENTARIO - TABLE STYLES
+   Color: #4A90E2 (blue-500)
+   ============================================================ */
+
+/* Container & Global */
+.table-container {
+    background: #f9fafb;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    border: 1px solid #d1d5db;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 1px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+    background: #ffffff;
+    border-radius: 15px;
+    position: relative;
+}
+
+/* Data Table */
+.data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.data-table th {
+    padding: 18px 24px;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+.data-table th:first-child {
+    padding-left: 24px;
+}
+
+.data-table th:last-child {
+    padding-right: 24px;
+}
+
+.data-table td {
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+    vertical-align: middle;
+}
+
+.table-row:last-child td {
+    border-bottom: none;
+}
+
+.table-row:hover td {
+    background: #eff6ff;
+}
+
+/* Product Info Cell */
+.product-info-cell {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.product-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #3b82f6;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
+    border: 2px solid white;
+}
+
+.product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.product-name {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.9375rem;
+}
+
+.product-meta {
+    font-size: 0.8125rem;
+    color: #64748b;
+    opacity: 0.8;
+}
+
+/* Typography & Tags */
+.mono-text {
+    font-family: 'JetBrains Mono', 'Roboto Mono', monospace;
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.category-type {
+    font-weight: 500;
+    color: #64748b;
+}
+
+.badge-pill {
+    display: inline-flex;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.badge-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+}
+
+.badge-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+}
+
+.badge-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+}
+
+.badge-info {
+    background: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
+}
+
+.badge-default {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.badge-apartado {
+    background: #fef3c7;
+    color: #d97706;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Actions Cell */
+.actions-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-icon--edit {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.btn-icon--edit:hover {
+    background: rgba(59, 130, 246, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+}
+
+.btn-icon--delete {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-color: #ef4444;
+}
+
+.btn-icon--delete:hover {
+    background: rgba(239, 68, 68, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.2);
+}
+
+.btn-icon--report {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border-color: #f59e0b;
+}
+
+.btn-icon--report:hover {
+    background: rgba(245, 158, 11, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(245, 158, 11, 0.2);
+}
+
+.btn-icon--verify {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border-color: #10b981;
+}
+
+.btn-icon--verify:hover {
+    background: rgba(16, 185, 129, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(16, 185, 129, 0.2);
+}
+
+/* Loading / Empty states */
+.loading-state,
+.empty-state {
+    padding: 80px 20px;
+    text-align: center;
+    color: #64748b;
+}
+
+.empty-state svg {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 20px;
+    display: block;
+    opacity: 0.3;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid #e2e8f0;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Location code badge */
+.location-code {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    border: 1px dashed #93c5fd;
+}
+
+/* Project pill */
+.project-pill {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
